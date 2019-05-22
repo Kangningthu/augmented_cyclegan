@@ -100,7 +100,7 @@ def train_model():
     use_gpu = len(opt.gpu_ids) > 0
 
     if opt.seed is not None:
-        print "using random seed:", opt.seed
+        print("using random seed:", opt.seed)
         random.seed(opt.seed)
         np.random.seed(opt.seed)
         torch.manual_seed(opt.seed)
