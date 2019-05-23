@@ -4,7 +4,7 @@ from torch.nn import init
 import functools
 from torch.autograd import Variable
 import numpy as np
-from modules import ResnetBlock, CondInstanceNorm, TwoInputSequential, CINResnetBlock, InstanceNorm2d
+from .modules import ResnetBlock, CondInstanceNorm, TwoInputSequential, CINResnetBlock, InstanceNorm2d
 
 ###############################################################################
 # Functions
@@ -471,6 +471,8 @@ class LatentEncoder(nn.Module):
         self.enc_logvar = nn.Conv2d(8*nef, nlatent, kernel_size=1, stride=1, padding=0, bias=True)
 
     def forward(self, input):
+        print('len(self.gpu_ids)')
+        print(len(self.gpu_ids))
         if len(self.gpu_ids)>1 and isinstance(input.data, torch.cuda.FloatTensor):
             conv_out = nn.parallel.data_parallel(self.conv_modules, input, self.gpu_ids)
             mu = nn.parallel.data_parallel(self.enc_mu, conv_out, self.gpu_ids)

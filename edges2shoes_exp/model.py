@@ -7,7 +7,7 @@ import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-import networks
+from . import networks
 import numpy as np
 import math
 
