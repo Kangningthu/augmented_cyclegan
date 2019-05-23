@@ -427,7 +427,8 @@ class DiscriminatorLatent(nn.Module):
         if input.dim() == 4:
             input = input.view(input.size(0), self.nlatent)
 
-        if len(self.gpu_ids)>1 and isinstance(input.data, torch.cuda.FloatTensor):
+        # if len(self.gpu_ids)>1 and isinstance(input.data, torch.cuda.FloatTensor):
+        if len(self.gpu_ids) == 1 and isinstance(input.data, torch.cuda.FloatTensor):
             return nn.parallel.data_parallel(self.model, input, self.gpu_ids)
         else:
             return self.model(input)
@@ -471,7 +472,7 @@ class LatentEncoder(nn.Module):
         self.enc_logvar = nn.Conv2d(8*nef, nlatent, kernel_size=1, stride=1, padding=0, bias=True)
 
     def forward(self, input):
-        if len(self.gpu_ids)==1 and isinstance(input.data, torch.cuda.FloatTensor):
+        if len(self.gpu_ids) > 1 and isinstance(input.data, torch.cuda.FloatTensor):
             conv_out = nn.parallel.data_parallel(self.conv_modules, input, self.gpu_ids)
             mu = nn.parallel.data_parallel(self.enc_mu, conv_out, self.gpu_ids)
             logvar = nn.parallel.data_parallel(self.enc_logvar, conv_out, self.gpu_ids)
